@@ -1,9 +1,8 @@
-FROM debian:testing AS build_stage
+FROM alpine:3.15 AS build_stage
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    python3 python3-pip  \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk add \
+    python3 \
+    py3-pip
 
 RUN python3 -m pip install pyyaml
 
@@ -11,5 +10,5 @@ COPY . .
 
 RUN python3 main.py > index.html
 
-FROM nginx
+FROM nginx:alpine
 COPY --from=build_stage index.html /usr/share/nginx/html
